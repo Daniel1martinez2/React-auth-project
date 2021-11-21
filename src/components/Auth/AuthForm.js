@@ -1,9 +1,8 @@
 import { useState } from 'react';
-
+import { CREATE_USER_URL, LOGIN_URL} from '../../utils/gitKeys'; 
 import classes from './AuthForm.module.css';
 
-const CREATE_USER_URL = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAoWnGyPHADLfvc3m3SGPw6LnX9Smab0xo'; 
-const LOGIN_URL = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAoWnGyPHADLfvc3m3SGPw6LnX9Smab0xo'; 
+
 
 const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -43,7 +42,7 @@ const AuthForm = () => {
         if(response.ok){
           console.log('✅');
           return response.json();
-        }else{
+        }else{  
           return response.json().then(errorData =>{
             console.log(errorData);
             let errorMessage = 'Authentication failed'; 
