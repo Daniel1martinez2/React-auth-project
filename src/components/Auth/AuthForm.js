@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+import AuthContext from '../../store/auth-context'; 
 import { CREATE_USER_URL, LOGIN_URL} from '../../utils/gitKeys'; 
 import classes from './AuthForm.module.css';
 
@@ -9,6 +10,8 @@ const AuthForm = () => {
   const [emailInput, setEmailInput] = useState('');
   const [passwordInput, setPasswordInput] = useState('');
   const [isLoading, setIsLoading] = useState(false); 
+  const authCtx = useContext(AuthContext); 
+  const {login} = authCtx; 
 
   const emailInputHandler = (e) => setEmailInput(e.target.value)
   const passwordInputHandler = (e) => setPasswordInput(e.target.value)
@@ -20,7 +23,7 @@ const AuthForm = () => {
     setEmailInput(''); 
     setPasswordInput(''); 
     let url; 
-    //The request i different -> it depends wether is login or register
+    //The request is different -> it depends wether is login or register
     if(isLogin){
       url = LOGIN_URL;
     }else{
@@ -44,13 +47,13 @@ const AuthForm = () => {
           return response.json();
         }else{  
           return response.json().then(errorData =>{
-            console.log(errorData);
             let errorMessage = 'Authentication failed'; 
             throw new Error(errorMessage);
           });
         }
       }).then(data => {
         console.log(data);
+        login(data.idToken)
       }).catch(err => {
         alert(err);
       }); 
