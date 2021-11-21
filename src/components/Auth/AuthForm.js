@@ -2,7 +2,8 @@ import { useState } from 'react';
 
 import classes from './AuthForm.module.css';
 
-const URL = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAoWnGyPHADLfvc3m3SGPw6LnX9Smab0xo'; 
+const CREATE_USER_URL = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAoWnGyPHADLfvc3m3SGPw6LnX9Smab0xo'; 
+const LOGIN_URL = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAoWnGyPHADLfvc3m3SGPw6LnX9Smab0xo'; 
 
 const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -19,42 +20,45 @@ const AuthForm = () => {
     
     setEmailInput(''); 
     setPasswordInput(''); 
-    
+    let url; 
     //The request i different -> it depends wether is login or register
-    if(!isLogin){
-      setIsLoading(true)
-      fetch(URL, {
+    if(isLogin){
+      url = LOGIN_URL;
+    }else{
+      url = CREATE_USER_URL;
+    }
+    setIsLoading(true);
+      fetch(url, {
         method: 'POST',
-        body: JSON.stringify({
+        body:JSON.stringify({
           email: emailInput,
           password: passwordInput,
           returnSecureToken: true
-        }), 
-        headers: {
+        }),
+        headers:{
           'Content-Type': 'application/json'
         }
-
-      }).then(async res => {
+      }).then(async response => {
         setIsLoading(false); 
-        if(res.ok){
-          // console.log(res);
+        if(response.ok){
+          console.log('✅');
+          return response.json();
         }else{
-          const data = await res.json();
-          //show an modal error
-          let errorMessage = 'Authentication failed'; 
-          if(data && data.error.message) errorMessage = data.error.message; 
-          alert(errorMessage);
+          return response.json().then(errorData =>{
+            console.log(errorData);
+            let errorMessage = 'Authentication failed'; 
+            throw new Error(errorMessage);
+          });
         }
-      })
-    }else{
-
+      }).then(data => {
+        console.log(data);
+      }).catch(err => {
+        alert(err);
+      }); 
     }
-
-  }
 
   const switchAuthModeHandler = () => {
     setIsLogin((prevState) => !prevState);
-    console.log('sssss');
   };
 
   return (
