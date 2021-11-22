@@ -55,6 +55,7 @@ const AuthForm = () => {
         }
       }).then(data => {
         console.log(data);
+        // data.expiresIn is equal to 3600 seconds (not milliseconds) -> 1 hour
         const expirationTime = new Date(new Date().getTime() + (+ data.expiresIn * 1000)); 
         login(data.idToken, expirationTime.toISOString() )
         history.replace('/')
