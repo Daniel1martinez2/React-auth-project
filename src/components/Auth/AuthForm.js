@@ -1,6 +1,7 @@
 import { useState, useContext } from 'react';
 import AuthContext from '../../store/auth-context'; 
 import { CREATE_USER_URL, LOGIN_URL} from '../../utils/gitKeys'; 
+import { useHistory } from 'react-router-dom';
 import classes from './AuthForm.module.css';
 
 
@@ -12,6 +13,7 @@ const AuthForm = () => {
   const [isLoading, setIsLoading] = useState(false); 
   const authCtx = useContext(AuthContext); 
   const {login} = authCtx; 
+  const history = useHistory();
 
   const emailInputHandler = (e) => setEmailInput(e.target.value)
   const passwordInputHandler = (e) => setPasswordInput(e.target.value)
@@ -53,7 +55,9 @@ const AuthForm = () => {
         }
       }).then(data => {
         console.log(data);
-        login(data.idToken)
+        const expirationTime = new Date(new Date().getTime() + (+ data.expiresIn * 1000)); 
+        login(data.idToken, expirationTime.toISOString() )
+        history.replace('/')
       }).catch(err => {
         alert(err);
       }); 

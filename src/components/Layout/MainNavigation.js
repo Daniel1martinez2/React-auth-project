@@ -7,6 +7,7 @@ import classes from './MainNavigation.module.css';
 const MainNavigation = () => {
   const authCtx = useContext(AuthContext); 
   const {isLoggedIn, logout} = authCtx;
+  console.log(isLoggedIn);
   return (
     <header className={classes.header}>
       <Link to='/'>
