@@ -52,16 +52,14 @@ const AuthProvider = ({children}) => {
     localStorage.setItem('token', token);
     //stored the expiration time
     localStorage.setItem('expirationTime', expirationTime);
-
-    const remainingTime = calculateRemainingTime(expirationTime); 
-
-    logOutTimer = setTimeout(logoutHandler, remainingTime); 
   };
 
   useEffect(() => {
     if(tokenData){
       console.log(tokenData.duration);
       logOutTimer = setTimeout(logoutHandler, tokenData.duration); 
+    }else{
+      console.log('No token data');
     }
   }, [tokenData, logoutHandler])
 
